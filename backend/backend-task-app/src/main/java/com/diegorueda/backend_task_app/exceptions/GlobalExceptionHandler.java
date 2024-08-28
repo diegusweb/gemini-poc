@@ -13,11 +13,11 @@ import io.jsonwebtoken.security.SignatureException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-@ExceptionHandler(Exception.class)
+
+    @ExceptionHandler(Exception.class)
     public ProblemDetail handleSecurityException(Exception exception) {
         ProblemDetail errorDetail = null;
 
-        // TODO send this stack trace to an observability tool
         exception.printStackTrace();
 
         if (exception instanceof BadCredentialsException) {
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
 
         if (exception instanceof SignatureException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
-            errorDetail.setProperty("description", "The JWT signature is invalid");
+            errorDetail.setProperty("description", "The JWT signature is invalid.");
         }
 
         if (exception instanceof ExpiredJwtException) {
