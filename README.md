@@ -17,19 +17,20 @@ Before you begin, ensure you have the following installed on your system:
 
 ### Clone the Repository
 
-
+```sh
 git clone <REPOSITORY_URL>
+```
 
 Replace <REPOSITORY_URL> with the actual URL of the repository.
 
 ### Navigate to the Backend Application Directory
-
+```sh
 cd backend/backend-task-app
-
+```
 ### Build and Run with Docker Compose
-
+```sh
 docker-compose up -d
-
+```
 This command will:
 
 - Build the necessary Docker images based on the Dockerfile in the current directory.
@@ -39,9 +40,9 @@ The -d flag runs the containers in detached mode (in the background).
 
 ### Verifying the Installation
 Check Running Containers
-
+```sh
 docker ps
-
+```
 You should see two containers running: one named mongodb and the other springboot-app.
 
 ### Access the Application
