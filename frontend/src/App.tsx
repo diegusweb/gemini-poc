@@ -7,6 +7,7 @@ import { ThemeModeEnum } from './types'
 import { darkTheme, lightTheme } from './theme'
 import { useAppSelector } from './store'
 import { TestComponent } from './TestComponent'
+import { AppRoutes } from './routes'
 
 function App() {
   const { themeMode } = useAppSelector((state) => state.ui);
@@ -14,7 +15,7 @@ function App() {
   return (
     <ThemeProvider theme={themeMode === ThemeModeEnum.LIGHT ? lightTheme : darkTheme}>
       <CssBaseline />
-      <TestComponent />
+      <AppRoutes />
     </ThemeProvider>
   );
 }

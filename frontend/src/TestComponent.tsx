@@ -1,7 +1,9 @@
 import { Box, Typography, Divider, Container, Grid } from '@mui/material';
 
-import { Loader, ToggleThemeMode, UserCard } from './components';
 import { useGetUsersQuery } from './store';
+import { ToggleThemeMode } from './components/toggle-theme-mode/ToggleThemeMode';
+import { Loader } from './components';
+import { UserCard } from './components/user-card/UserCard';
 
 export const TestComponent = () => {
   const { data: users, isLoading: isLoadingUsers } = useGetUsersQuery();
