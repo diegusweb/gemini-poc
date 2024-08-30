@@ -13,6 +13,8 @@ import com.diegorueda.backend_task_app.model.User;
 import com.diegorueda.backend_task_app.service.AuthenticationService;
 import com.diegorueda.backend_task_app.service.JwtService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
@@ -43,5 +45,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    // @PostMapping("/logout")
+    // public ResponseEntity<Void> logout(HttpServletRequest request) {
+    //     String token = jwtService.getTokenFromRequest(request);
+    //     revokedTokenRepository.save(new RevokedToken(token));
+    //     return ResponseEntity.ok().build();
+    // }
 
 }
