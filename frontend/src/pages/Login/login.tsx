@@ -1,13 +1,13 @@
 import { Copyright, MusicNote } from "@mui/icons-material";
-import { Avatar, Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, Link, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, Link, Paper, TextField, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-import history from '../../utils/history';;
 import { getToken } from "../../utils/HelperFucntions";
 import { login } from "../../store/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { makeStyles } from "@mui/styles";
 import { ToggleThemeMode } from "../../components";
 import { useNavigate } from "react-router-dom";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -72,6 +72,11 @@ export const Login = () => {
 
     }
 
+    const singup = () => {
+        navigate('/signup');
+    }
+
+
     return (<Grid container component="main" className={classes.root}>
 
         <Box sx={{ m: 2 }}>
@@ -132,7 +137,7 @@ export const Login = () => {
                     </Button>
                     <Grid container>
                         <Grid item>
-                            <Link href="#" variant="body2">
+                            <Link href="#" onClick={singup} variant="body2">
                                 {"Don't have an account? Sign Up"}
                             </Link>
                         </Grid>

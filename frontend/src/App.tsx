@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Dashboard } from './pages/Dashboard/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import NotFound from './pages/NotFound/NotFound'
+import { SingUp } from './pages/SingUp/SingUP'
 
 function App() {
   const { themeMode } = useAppSelector((state) => state.ui);
@@ -22,7 +23,8 @@ function App() {
       <Router>
             <Routes>
                 <Route path="/" element={<Login />} />
-                <Route path="*" element={<NotFound />} /> {/* Ruta para la página no encontrada */}
+                <Route path="*" element={<NotFound />} />
+                <Route path="/signup" element={<SingUp />} />
                 <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
                   <Route path="/dashboard" element={<Dashboard />} />
                  {/* Puedes agregar más rutas protegidas aquí */}
