@@ -6,15 +6,29 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ThemeModeEnum } from './types'
 import { darkTheme, lightTheme } from './theme'
 import { useAppSelector } from './store'
-import { TestComponent } from './TestComponent'
+import { Login } from './pages/Login/login'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { Dashboard } from './pages/Dashboard/Dashboard'
+import ProtectedRoute from './components/ProtectedRoute'
+import NotFound from './pages/NotFound/NotFound'
 
 function App() {
   const { themeMode } = useAppSelector((state) => state.ui);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   return (
     <ThemeProvider theme={themeMode === ThemeModeEnum.LIGHT ? lightTheme : darkTheme}>
       <CssBaseline />
-      <TestComponent />
+      <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="*" element={<NotFound />} /> {/* Ruta para la página no encontrada */}
+                <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                 {/* Puedes agregar más rutas protegidas aquí */}
+              </Route>
+            </Routes>
+        </Router>
     </ThemeProvider>
   );
 }
