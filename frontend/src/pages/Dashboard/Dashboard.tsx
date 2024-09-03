@@ -8,16 +8,10 @@ import { LOgout } from "../../components/logout/Logout";
 
 
 export const Dashboard = () => {
-    const { token, loading } = useAppSelector((state) => state.auth);
+    //const { token, loading } = useAppSelector((state) => state.auth);
     const navigate = useNavigate();
-
-    console.log(token)
-        console.log(getToken())
     
-    if (token === "" || getToken() === "") {
-        console.log("entro")
-        console.log(token)
-        console.log(getToken())
+    if (getToken() === "") {
         navigate('/');
         return;
     }

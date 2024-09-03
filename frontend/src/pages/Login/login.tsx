@@ -1,12 +1,13 @@
 import { Copyright, MusicNote } from "@mui/icons-material";
 import { Avatar, Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, Link, Paper, TextField, Theme, Typography, useTheme } from "@mui/material";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { getToken } from "../../utils/HelperFucntions";
 import { login } from "../../store/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { makeStyles } from "@mui/styles";
 import { ToggleThemeMode } from "../../components";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -45,31 +46,115 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
+interface LoginError {
+    message: string;
+}
+
 export const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const dispatch = useAppDispatch();
     const { token, loading } = useAppSelector((state) => state.auth);
     const classes = useStyles();
     const navigate = useNavigate();
 
+    const [formValues, setFormValues] = useState({
+        email: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter an email'
+        },
+        password: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter an password'
+        }
+    })
+
+    type FormValuesKeys = 'email' | 'password';
+
     useEffect(() => {
-        if (token || getToken()) {
+        if (getToken()) {
             navigate('/dashboard');
         }
     }, [token]);
 
-    const handleLogin = () => {
-        console.log(email, password)
-        if (email != "" && password != "") {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.name as FormValuesKeys;
+        const value = e.target.value;
+
+        // Basic email validation regex
+        const isValidEmail = /^[^@]+@[^@]+\.[^@]+$/.test(value);
+
+        setFormValues({
+            ...formValues,
+            [name]: {
+                ...formValues[name],
+                value,
+                error: name === 'email' ? !isValidEmail : formValues[name].error, // Validate email
+                errorMessage: name === 'email' && !isValidEmail ? 'Invalid email format' : formValues[name].errorMessage
+            }
+        });
+    }
+
+    const handleLogin = (e: any) => {
+        e.preventDefault();
+
+        const formFields: FormValuesKeys[] = ['email', 'password']; // Specify the keys directly
+        let newFormValues = { ...formValues };
+
+        for (let index = 0; index < formFields.length; index++) {
+            const currentField = formFields[index];
+            const currentValue = formValues[currentField].value;
+
+            // Check for empty fields AND validate email if it's the email field
+            if (currentValue === '' || (currentField === 'email' && !/^[^@]+@[^@]+\.[^@]+$/.test(currentValue))) {
+                newFormValues = {
+                    ...newFormValues,
+                    [currentField]: {
+                        ...newFormValues[currentField],
+                        error: true,
+                    },
+                };
+            } else {
+                newFormValues = {
+                    ...newFormValues,
+                    [currentField]: {
+                        ...newFormValues[currentField],
+                        error: false,
+                    },
+                };
+            }
+        }
+        setFormValues(newFormValues);
+
+        const hasErrors = Object.values(newFormValues).some(
+            (field) => field.error === true
+        );
+
+        if (!hasErrors) {
             dispatch(login({
-                "email": email,
-                "password": password
-            })).then(() => {
-                navigate('/dashboard');
+                "email": formValues.email.value,
+                "password": formValues.password.value
+            })).then((data) => {
+                if (data.type.endsWith('/rejected')) {
+                    const errorMessage = (data.payload.error as LoginError)?.message || 'Login failed';
+                } else {
+                    // Login successful
+                    navigate('/dashboard');
+                }
+
+            }).catch((err) => {
+                console.log("--------------s-------------" + err)
+            });
+        } else {
+            toast.error("Please fill all the fields", {
+                autoClose: 2000,
+                hideProgressBar: true,
+                position: "bottom-right",
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: "colored",
             });
         }
-
     }
 
     const singup = () => {
@@ -99,18 +184,21 @@ export const Login = () => {
                 </Typography>
                 <form className={classes.form} noValidate>
                     <TextField
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleChange}
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
                         id="username"
-                        label="Username"
-                        name="username"
+                        label="email"
+                        name="email"
                         autoFocus
+                        error={formValues.email.error}
+                        value={formValues.email.value}
+                        helperText={formValues.email.error && formValues.email.errorMessage}
                     />
                     <TextField
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handleChange}
                         variant="outlined"
                         margin="normal"
                         required
@@ -120,6 +208,9 @@ export const Login = () => {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        error={formValues.password.error}
+                        value={formValues.password.value}
+                        helperText={formValues.password.error && formValues.password.errorMessage}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}

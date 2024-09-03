@@ -69,9 +69,17 @@ export const SingUp = () => {
         const name = e.target.name as FormValuesKeys;
         const value = e.target.value;
 
+        // Basic email validation regex
+        const isValidEmail = /^[^@]+@[^@]+\.[^@]+$/.test(value);
+
         setFormValues({
             ...formValues,
-            [name]: { ...formValues[name], value }
+            [name]: {
+                ...formValues[name],
+                value,
+                error: name === 'email' ? !isValidEmail : formValues[name].error, // Validate email
+                errorMessage: name === 'email' && !isValidEmail ? 'Invalid email format' : formValues[name].errorMessage
+            }
         });
 
         console.log(formValues)
@@ -81,14 +89,31 @@ export const SingUp = () => {
         e.preventDefault();
 
         const formFields: FormValuesKeys[] = ['firstName', 'lastName', 'email', 'password']; // Specify the keys directly
-        const newFormValues = formFields.reduce((acc, currentField) => ({
-            ...acc,
-            [currentField]: {
-                ...acc[currentField],
-                error: formValues[currentField].value === '',
-            },
-        }), { ...formValues });
+        let newFormValues = { ...formValues };
 
+        for (let index = 0; index < formFields.length; index++) {
+            const currentField = formFields[index];
+            const currentValue = formValues[currentField].value;
+
+            // Check for empty fields AND validate email if it's the email field
+            if (currentValue === '' || (currentField === 'email' && !/^[^@]+@[^@]+\.[^@]+$/.test(currentValue))) {
+                newFormValues = {
+                    ...newFormValues,
+                    [currentField]: {
+                        ...newFormValues[currentField],
+                        error: true,
+                    },
+                };
+            } else {
+                newFormValues = {
+                    ...newFormValues,
+                    [currentField]: {
+                        ...newFormValues[currentField],
+                        error: false,
+                    },
+                };
+            }
+        }
         setFormValues(newFormValues);
 
         const hasErrors = Object.values(newFormValues).some(
@@ -96,30 +121,29 @@ export const SingUp = () => {
         );
 
         if (!hasErrors) {
+            dispatch(singup({
+                "email": formValues.email.value,
+                "password": formValues.password.value,
+                "firtName": formValues.firstName.value,
+                "lastName": formValues.lastName.value
+            })).then((data) => {
+                toast.success("Success for user new", {
+                    autoClose: 2000, hideProgressBar: true, position: "bottom-right",
+                    closeOnClick: true, pauseOnHover: true, theme: "colored",
+                });
 
-            // dispatch(singup({
-            //     "email": email,
-            //     "password": password,
-            //     "fullname": firstName + " " + lastName
-            // })).then((data) => {
-            //     toast.success("Success for user new", {
-            //         autoClose: 2000, hideProgressBar: true, position: "bottom-right",
-            //         closeOnClick: true, pauseOnHover: true, theme: "colored",
-            //     });
-
-            //     navigate('/');
-            // });
-        }else{
+                navigate('/');
+            });
+        } else {
             toast.error("Please fill all the fields", {
-                autoClose: 2000, 
-                hideProgressBar: true, 
+                autoClose: 2000,
+                hideProgressBar: true,
                 position: "bottom-right",
-                closeOnClick: true, 
-                pauseOnHover: true, 
+                closeOnClick: true,
+                pauseOnHover: true,
                 theme: "colored",
-              });
+            });
         }
-
     }
 
     const login = () => {
@@ -167,6 +191,7 @@ export const SingUp = () => {
                                 autoComplete="lname"
                                 error={formValues.lastName.error}
                                 value={formValues.lastName.value}
+                                helperText={formValues.lastName.error && formValues.lastName.errorMessage}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -181,6 +206,7 @@ export const SingUp = () => {
                                 autoComplete="email"
                                 error={formValues.email.error}
                                 value={formValues.email.value}
+                                helperText={formValues.email.error && formValues.email.errorMessage}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -196,6 +222,7 @@ export const SingUp = () => {
                                 autoComplete="current-password"
                                 error={formValues.password.error}
                                 value={formValues.password.value}
+                                helperText={formValues.password.error && formValues.password.errorMessage}
                             />
                         </Grid>
                     </Grid>
