@@ -18,7 +18,8 @@ function App() {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   return (
-    <ThemeProvider theme={themeMode === ThemeModeEnum.LIGHT ? lightTheme : darkTheme}>
+    // <ThemeProvider theme={themeMode === ThemeModeEnum.DARK ? darkTheme : lightTheme}>
+    <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Router>
             <Routes>
