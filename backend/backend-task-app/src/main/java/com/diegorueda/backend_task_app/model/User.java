@@ -14,7 +14,8 @@ import lombok.Data;
 @Data
 public class User implements UserDetails {
     private String id;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String password;
     private String email;
     private Date createdAt;

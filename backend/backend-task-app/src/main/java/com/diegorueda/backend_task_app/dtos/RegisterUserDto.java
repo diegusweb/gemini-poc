@@ -1,15 +1,22 @@
 package com.diegorueda.backend_task_app.dtos;
 
 public class RegisterUserDto {
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     
-    public String getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
     public String getEmail() {
         return email;

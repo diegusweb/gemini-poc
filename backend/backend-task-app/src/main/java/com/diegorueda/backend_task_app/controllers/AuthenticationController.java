@@ -1,5 +1,7 @@
 package com.diegorueda.backend_task_app.controllers;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,14 +38,18 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
-
-        String jwtToken = jwtService.generateToken(authenticatedUser);
-
-        LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());;
-
-        return ResponseEntity.ok(loginResponse);
+    public ResponseEntity<String> authenticate(@RequestBody LoginUserDto loginUserDto) {
+        try {
+            User authenticatedUser = authenticationService.authenticate(loginUserDto);
+    
+            String jwtToken = jwtService.generateToken(authenticatedUser);
+    
+            LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
+    
+            return ResponseEntity.ok(loginResponse.getToken());
+        } catch (Exception e) { // Catch any exception during authentication
+            return ResponseEntity.badRequest().body("Invalid credentials"); 
+        }
     }
 
     // @PostMapping("/logout")
