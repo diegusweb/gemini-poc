@@ -27,7 +27,6 @@ function App() {
                 <Route path="/signup" element={<SingUp />} />
                 <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
                   <Route path="/dashboard" element={<Dashboard />} />
-                 {/* Puedes agregar más rutas protegidas aquí */}
               </Route>
             </Routes>
         </Router>

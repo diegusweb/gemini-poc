@@ -20,7 +20,7 @@ const initialState: AuthState = {
 };
 
 export const login = createAsyncThunk('auth/login', async (payload: any) => {
-    console.log(payload)
+    console.log("-----------------------")
     const response = await AppServices.login(payload)
     console.log(response)
     setToken(response.data.token);

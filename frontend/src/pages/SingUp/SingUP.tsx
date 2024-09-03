@@ -1,12 +1,15 @@
-import { Avatar, Box, Button, Checkbox, Container, CssBaseline, Divider, FormControlLabel, Grid, Link, TextField, Typography } from "@mui/material"
+import { Avatar, Box, Button, Checkbox, Container, CssBaseline, Divider, FormControlLabel, Grid, Link, TextField, Theme, Typography } from "@mui/material"
 import { ToggleThemeMode } from "../../components"
 import { Copyright } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { singup, useAppDispatch } from "../../store";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { ChangeEvent } from 'react';
 
-const useStyles = makeStyles((theme) => ({
+
+const useStyles = makeStyles((theme: Theme) => ({
     "@global": {
         body: {
             backgroundColor: theme.palette.common.white
@@ -32,26 +35,89 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const SingUp = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+
+    const [formValues, setFormValues] = useState({
+        firstName: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter a firstName'
+        },
+        lastName: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter an lastName'
+        },
+        email: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter an email'
+        },
+        password: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter an password'
+        }
+    })
+
+    type FormValuesKeys = 'firstName' | 'lastName' | 'email' | 'password';
 
     const dispatch = useAppDispatch();
     const classes = useStyles();
     const navigate = useNavigate();
 
-    const handleSingUp = () => {
-        console.log(email, password)
-        if (email != "" && password != "") {
-            dispatch(singup({
-                "email": email,
-                "password": password,
-                "fullname": firstName + " " + lastName
-            })).then((data) => {
-                console.log(data)
-                navigate('/');
-            });
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.name as FormValuesKeys;
+        const value = e.target.value;
+
+        setFormValues({
+            ...formValues,
+            [name]: { ...formValues[name], value }
+        });
+
+        console.log(formValues)
+    }
+
+    const handleSingUp = (e: any) => {
+        e.preventDefault();
+
+        const formFields: FormValuesKeys[] = ['firstName', 'lastName', 'email', 'password']; // Specify the keys directly
+        const newFormValues = formFields.reduce((acc, currentField) => ({
+            ...acc,
+            [currentField]: {
+                ...acc[currentField],
+                error: formValues[currentField].value === '',
+            },
+        }), { ...formValues });
+
+        setFormValues(newFormValues);
+
+        const hasErrors = Object.values(newFormValues).some(
+            (field) => field.error === true
+        );
+
+        if (!hasErrors) {
+
+            // dispatch(singup({
+            //     "email": email,
+            //     "password": password,
+            //     "fullname": firstName + " " + lastName
+            // })).then((data) => {
+            //     toast.success("Success for user new", {
+            //         autoClose: 2000, hideProgressBar: true, position: "bottom-right",
+            //         closeOnClick: true, pauseOnHover: true, theme: "colored",
+            //     });
+
+            //     navigate('/');
+            // });
+        }else{
+            toast.error("Please fill all the fields", {
+                autoClose: 2000, 
+                hideProgressBar: true, 
+                position: "bottom-right",
+                closeOnClick: true, 
+                pauseOnHover: true, 
+                theme: "colored",
+              });
         }
 
     }
@@ -75,7 +141,7 @@ export const SingUp = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                onChange={(e) => setFirstName(e.target.value)}
+                                onChange={handleChange}
                                 autoComplete="fname"
                                 name="firstName"
                                 variant="outlined"
@@ -84,11 +150,14 @@ export const SingUp = () => {
                                 id="firstName"
                                 label="First Name"
                                 autoFocus
+                                error={formValues.firstName.error}
+                                value={formValues.firstName.value}
+                                helperText={formValues.firstName.error && formValues.firstName.errorMessage}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                onChange={(e) => setLastName(e.target.value)}
+                                onChange={handleChange}
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -96,11 +165,13 @@ export const SingUp = () => {
                                 label="Last Name"
                                 name="lastName"
                                 autoComplete="lname"
+                                error={formValues.lastName.error}
+                                value={formValues.lastName.value}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={handleChange}
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -108,11 +179,13 @@ export const SingUp = () => {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                error={formValues.email.error}
+                                value={formValues.email.value}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={handleChange}
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -121,6 +194,8 @@ export const SingUp = () => {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                error={formValues.password.error}
+                                value={formValues.password.value}
                             />
                         </Grid>
                     </Grid>
@@ -137,7 +212,7 @@ export const SingUp = () => {
                     >
                         Sign Up
                     </Button>
-                    <Grid container justify="flex-end">
+                    <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Link href="#" onClick={login} variant="body2">
                                 Already have an account? Sign in

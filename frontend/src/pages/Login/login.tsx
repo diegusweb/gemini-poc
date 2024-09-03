@@ -1,5 +1,5 @@
 import { Copyright, MusicNote } from "@mui/icons-material";
-import { Avatar, Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, Link, Paper, TextField, Typography, useTheme } from "@mui/material";
+import { Avatar, Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, Link, Paper, TextField, Theme, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getToken } from "../../utils/HelperFucntions";
 import { login } from "../../store/slices/authSlice";
@@ -9,7 +9,7 @@ import { ToggleThemeMode } from "../../components";
 import { useNavigate } from "react-router-dom";
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     root: {
         height: "100vh",
         backgroundRepeat: "no-repeat",
@@ -55,7 +55,7 @@ export const Login = () => {
 
     useEffect(() => {
         if (token || getToken()) {
-            navigate('/home');
+            navigate('/dashboard');
         }
     }, [token]);
 
