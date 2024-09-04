@@ -21,7 +21,7 @@ const initialState: AuthState = {
 
 export const login = createAsyncThunk('auth/login', async (payload: any) => {
     const response = await AppServices.login(payload)
-    setToken(response.data);
+    setToken(response.data.token);
     return response.data;
 
 })
@@ -47,9 +47,10 @@ export const authSlice = createSlice({
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.token = action.payload;
+                state.token = action.payload.token;
                 state.isAuthenticated = true;
                 state.loading = false;
+                state.userData = action.payload.userId;
             })
             .addCase(login.rejected, (state, action) => {
                 state.status = "failed";
@@ -58,6 +59,7 @@ export const authSlice = createSlice({
             .addCase(logout.fulfilled, (state, action) => {
                 state.token = null;
                 state.isAuthenticated = false;
+                state.userData = {};
             })
             .addCase(singup.pending, (state) => {
                 state.loading = true;

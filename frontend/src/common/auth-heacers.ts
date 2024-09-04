@@ -1,5 +1,7 @@
+import { getToken } from "../utils/HelperFucntions";
+
 export default function authHeader(){
-    const userToken = sessionStorage.get("auth-token");
+    const userToken = getToken();
 
     if(userToken){
         return {Authorization: `Bearer ${userToken}`}

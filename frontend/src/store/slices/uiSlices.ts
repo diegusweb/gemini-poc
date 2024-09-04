@@ -15,7 +15,8 @@ export const uiSlice = createSlice({
     initialState,
     reducers: {
         toggleThemeMode(state) {
-            state.themeMode = state.themeMode === ThemeModeEnum.LIGHT ? ThemeModeEnum.DARK : ThemeModeEnum.LIGHT;
+            state.themeMode = ThemeModeEnum.DARK;
+            //state.themeMode = state.themeMode === ThemeModeEnum.LIGHT ? ThemeModeEnum.DARK : ThemeModeEnum.LIGHT;
           },
     },
 });

@@ -4,6 +4,7 @@ import { authSlice } from "../slices/authSlice";
 import { uiSlice } from "../slices/uiSlices";
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from "redux-persist";
 import { configureStore } from "@reduxjs/toolkit";
+import { taskSlice } from "../slices/taskSlice";
 
 const persistConfig = {
     key: 'root',
@@ -15,6 +16,7 @@ const persistConfig = {
 const store = configureStore({
     reducer: {
         auth: authSlice.reducer,
+        task: taskSlice.reducer,
         ui: uiSlice.reducer
     }
 });
