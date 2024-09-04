@@ -3,6 +3,7 @@ package com.diegorueda.backend_task_app.model;
 public class LoginResponse {
     private String token;
     private long expiresIn;
+    private String userId;
 
     public String getToken() {
         return token;
@@ -19,6 +20,15 @@ public class LoginResponse {
 
     public LoginResponse setExpiresIn(long expiresIn) {
         this.expiresIn = expiresIn;
+        return this;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public LoginResponse setUserId(String userId) {
+        this.userId = userId;
         return this;
     }
 

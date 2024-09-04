@@ -38,17 +38,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
         try {
             User authenticatedUser = authenticationService.authenticate(loginUserDto);
     
             String jwtToken = jwtService.generateToken(authenticatedUser);
+            String userId = authenticatedUser.getId();
     
-            LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
+            LoginResponse loginResponse = new LoginResponse()
+            .setToken(jwtToken)
+            .setExpiresIn(jwtService.getExpirationTime())
+            .setUserId(userId);
     
-            return ResponseEntity.ok(loginResponse.getToken());
+            return ResponseEntity.ok(loginResponse);
         } catch (Exception e) { // Catch any exception during authentication
-            return ResponseEntity.badRequest().body("Invalid credentials"); 
+            return ResponseEntity.badRequest().body(null); 
         }
     }
 

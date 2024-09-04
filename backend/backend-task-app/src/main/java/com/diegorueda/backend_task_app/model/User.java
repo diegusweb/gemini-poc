@@ -18,6 +18,7 @@ public class User implements UserDetails {
     private String lastName;
     private String password;
     private String email;
+    private List<String> taskIds;
     private Date createdAt;
     private Date updatedAt;
 
