@@ -3,6 +3,7 @@ package com.diegorueda.backend_task_app.controllers;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.diegorueda.backend_task_app.dtos.LoginUserDto;
 import com.diegorueda.backend_task_app.dtos.RegisterUserDto;
 import com.diegorueda.backend_task_app.model.LoginResponse;
+import com.diegorueda.backend_task_app.model.RevokedToken;
 import com.diegorueda.backend_task_app.model.User;
+import com.diegorueda.backend_task_app.repository.RevokedTokenRepository;
 import com.diegorueda.backend_task_app.service.AuthenticationService;
 import com.diegorueda.backend_task_app.service.JwtService;
 
@@ -25,9 +28,12 @@ public class AuthenticationController {
     
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
+    private final RevokedTokenRepository revokedTokenRepository;
+
+    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, RevokedTokenRepository revokedTokenRepository) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
+        this.revokedTokenRepository = revokedTokenRepository;
     }
 
     @PostMapping("/signup")
@@ -56,11 +62,17 @@ public class AuthenticationController {
         }
     }
 
-    // @PostMapping("/logout")
-    // public ResponseEntity<Void> logout(HttpServletRequest request) {
-    //     String token = jwtService.getTokenFromRequest(request);
-    //     revokedTokenRepository.save(new RevokedToken(token));
-    //     return ResponseEntity.ok().build();
-    // }
-
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        // String token = jwtService.getTokenFromRequest(request);
+        // if (token != null) {
+        //     revokedTokenRepository.save(new RevokedToken(token, token));
+        //     return ResponseEntity.ok().build();
+        // } else {
+        //     return ResponseEntity.badRequest().build();
+        // }
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("Logout successful");
+    }
+    
 }
