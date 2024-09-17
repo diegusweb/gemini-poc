@@ -3,5 +3,6 @@ export default interface Task {
     description: string | null,
     loading: boolean,
     status: string,
-    userId: string | null
+    id: string,
+    dueDate: string
   };

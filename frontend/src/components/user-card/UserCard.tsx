@@ -2,16 +2,17 @@ import { EditOutlined, DeleteOutlined, EmailOutlined } from '@mui/icons-material
 import { Card, Avatar, CardContent, Typography, CardActions, IconButton, Box, Tooltip, useTheme } from '@mui/material';
 
 import { User } from '../../types';
+import Task from '../../types/interfaces/Task';
 
 interface UserCardProps {
-  user: User;
+  user: Task;
 }
 
 export const UserCard = ({ user }: UserCardProps) => {
   const theme = useTheme();
 
   const handleSendEmail = () => {
-    console.log('Send email:', user.email);
+   // console.log('Send email:', user.email);
   };
 
   const handleEditUser = () => {
@@ -39,21 +40,21 @@ export const UserCard = ({ user }: UserCardProps) => {
             background: `${theme.palette.grey[200]}`,
             border: `1px solid ${theme.palette.divider}`,
           }}
-          src={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.name}`}
-          alt={user.name}
+          src={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.title}`}
+          alt="asdsad"
         />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         <CardContent sx={{ flex: '1 0 auto' }}>
           <Typography variant="h2" component="div" sx={{ fontSize: '18px', fontWeight: '500', lineHeight: '28px' }}>
-            {user.name}
+            {user.title}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" sx={{ fontSize: '14px', lineHeight: '20px' }}>
-            {user.username}
+            {user.description}
           </Typography>
         </CardContent>
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Tooltip title={`Enviar email: ${user.email}`} placement="top" arrow>
+          <Tooltip title={`Enviar email: ${user.status}`} placement="top" arrow>
             <IconButton aria-label="send email" onClick={handleSendEmail}>
               <EmailOutlined />
             </IconButton>

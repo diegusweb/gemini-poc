@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import AppServices from "../../services/App.services";
 import { removeToken, setToken } from "../../utils/HelperFucntions";
 import history from "../../utils/history";
+import { RootState } from "../store";
 
 type AuthState = {
     token: string | null,
@@ -77,5 +78,7 @@ export const authSlice = createSlice({
     },
     reducers: {}
 })
+
+export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;;
 
 export const { } = authSlice.actions;
