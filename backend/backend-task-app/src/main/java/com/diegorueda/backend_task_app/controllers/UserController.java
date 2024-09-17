@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diegorueda.backend_task_app.model.User;
+import com.diegorueda.backend_task_app.repository.RevokedTokenRepository;
 import com.diegorueda.backend_task_app.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +29,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class UserController {
 
     private final UserService userService;
+
+    @Autowired
+    private final RevokedTokenRepository revokedTokenRepository;
 
     @GetMapping("/me")
     public ResponseEntity<User> authenticatedUser() {

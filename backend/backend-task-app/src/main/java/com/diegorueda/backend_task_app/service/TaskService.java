@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.diegorueda.backend_task_app.model.Task;
 import com.diegorueda.backend_task_app.repository.TaskRepository;
-
+import java.util.Optional;
 @Service
 public class TaskService {
 
@@ -39,4 +39,9 @@ public class TaskService {
     public List<Task> filterTasksByDueDate(String userId, LocalDate startDate, LocalDate endDate) {
         return taskRepository.findByUserIdAndDueDateBetween(userId, startDate, endDate);
     }
+
+    public Optional<Task> findTaskById(String id) {
+        return taskRepository.findById(id);
+    }
+
 }

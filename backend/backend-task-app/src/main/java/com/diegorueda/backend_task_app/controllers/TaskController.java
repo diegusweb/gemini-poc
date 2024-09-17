@@ -3,7 +3,9 @@ package com.diegorueda.backend_task_app.controllers;
 import java.time.LocalDate;
 import java.util.List;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,7 @@ import com.diegorueda.backend_task_app.service.TaskService;
 
 import lombok.RequiredArgsConstructor;
 
+
 @RestController
 @RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
@@ -32,13 +35,13 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping
+    @GetMapping("/")
     public List<Task> getTasks(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return taskService.getTasksByUser(user.getId());
     }
 
-    @PostMapping
+    @PostMapping()
     @ResponseBody// Add @ResponseBody to indicate a JSON response
     public ResponseEntity<Task> createTask(@RequestBody Task task, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
@@ -48,10 +51,36 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable String id, @RequestBody Task task, Authentication authentication) {
+    public ResponseEntity<Task> updateTask(@PathVariable String id, @RequestBody Task updatedTask, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        task.setUser(user);
-        return taskService.updateTask(task);
+
+        Optional<Task> taskOptional = taskService.findTaskById(id);
+        
+        if (taskOptional.isPresent()) {
+            Task task = taskOptional.get();
+            
+            // Verifica que la tarea pertenece al usuario autenticado
+            if (!task.getUser().getId().equals(user.getId())) {
+                return ResponseEntity.status(403).build(); // Forbidden
+            }
+
+            // Actualiza los campos de la tarea
+            task.setTitle(updatedTask.getTitle());
+            task.setDescription(updatedTask.getDescription());
+            task.setDueDate(updatedTask.getDueDate());
+            task.setStatus(updatedTask.getStatus());
+
+            // Guarda la tarea actualizada
+            Task savedTask = taskService.updateTask(task);
+            return ResponseEntity.ok(savedTask);
+        }else{
+            return ResponseEntity.notFound().build(); // Tarea no encontrada
+        }
+
+        //Task existingTask = taskOptional.get();
+
+       // task.setUser(user);
+       // return taskService.updateTask(task);
     }
 
     @DeleteMapping("/{id}")

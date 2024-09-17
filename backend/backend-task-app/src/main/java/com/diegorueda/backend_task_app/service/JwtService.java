@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.security.Key;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
-    private final RevokedTokenRepository revokedTokenRepository = null;
+    private final RevokedTokenRepository revokedTokenRepository;
+
+    // Inyecta el repositorio a través del constructor
+    public JwtService(RevokedTokenRepository revokedTokenRepository) {
+        this.revokedTokenRepository = revokedTokenRepository;
+    }
+
+    public boolean isTokenValid(String token) {
+        // Verifica si el token ha sido revocado
+        return !revokedTokenRepository.existsByToken(token);
+    }
 
     @Value("${security.jwt.secret-key}")
     private String secretKey;
