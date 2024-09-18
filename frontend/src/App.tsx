@@ -19,15 +19,20 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Router>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="*" element={<NotFound />} />
-                <Route path="/signup" element={<SingUp />} />
-                <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-              </Route>
-            </Routes>
-        </Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/signup" element={<SingUp />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

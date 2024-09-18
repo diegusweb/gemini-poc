@@ -32,7 +32,7 @@ export const editTask = createAsyncThunk('tasks/editTask', async (payload:any) =
 });
 
 // Eliminar una tarea
-export const removeTask = createAsyncThunk('tasks/removeTask', async (taskId) => {
+export const removeTask = createAsyncThunk('tasks/removeTask', async (taskId:any) => {
     await AppServices.deleteTask(taskId);
     return taskId;
 });
@@ -60,6 +60,7 @@ export const taskSlice = createSlice({
                 state.loading = false;
             })
             .addCase(addTask.fulfilled, (state, action) => {
+                console.log(action.payload)
                 state.tasks.push(action.payload);
                 state.status = "succeeded";
                 state.loading = false;

@@ -164,9 +164,6 @@ export const Login = () => {
 
     return (<Grid container component="main" className={classes.root}>
 
-        <Box sx={{ m: 2 }}>
-            <ToggleThemeMode />
-        </Box>
         {/* <Grid item xs={false} sm={4} md={7} className={classes.image} /> */}
         <Grid
             item

@@ -14,7 +14,7 @@ export const LOgout = () => {
 
   const logoutHandle = () => {
     dispatch(logout()).then(() => {
-        console.log("logout")
+      sessionStorage.removeItem('token');
       navigate('/');
     });
   };

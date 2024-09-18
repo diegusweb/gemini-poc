@@ -81,8 +81,6 @@ export const SingUp = () => {
                 errorMessage: name === 'email' && !isValidEmail ? 'Invalid email format' : formValues[name].errorMessage
             }
         });
-
-        console.log(formValues)
     }
 
     const handleSingUp = (e: any) => {

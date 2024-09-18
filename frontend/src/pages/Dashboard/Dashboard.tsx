@@ -4,10 +4,12 @@ import { getToken } from "../../utils/HelperFucntions";
 import { selectIsAuthenticated, useAppDispatch, useAppSelector } from "../../store";
 import { useNavigate } from "react-router-dom";
 import { LOgout } from "../../components/logout/Logout";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { addTask, getAllTasks, selectTasks } from "../../store/slices/taskSlice";
 import { useSelector } from "react-redux";
 import { TaskCard } from "../../components/task-card/TaskCard";
+import DeleteConfirmationModal from "../../components/modal/DeleteConfirmationModal";
+import { toast } from "react-toastify";
 
 
 
@@ -18,17 +20,27 @@ export const Dashboard = () => {
   const dispatch = useAppDispatch();
   const isLoadingUsers = useSelector(selectIsAuthenticated);
   const [open, setOpen] = useState(false);
-  const [currentTask, setCurrentTask] = useState({ id: 0, title: '', description: '', dueDate: '', status: 'Pending' });
+  const [currentTask, setCurrentTask] = useState({ title: '', description: '', dueDate: '', status: 'Pending' });
 
-
-
-  if (getToken() === "" && !isLoadingUsers) {
-    navigate('/');
-    return;
-  }
+  const [formValues, setFormValues] = useState({
+    title: {
+      value: '',
+      error: false,
+      errorMessage: 'You must enter an title'
+    },
+    description: {
+      value: '',
+      error: false,
+      errorMessage: 'You must enter an description'
+    },
+    dueDate: {
+      value: '',
+      error: false,
+      errorMessage: 'You must enter an date'
+    }
+  })
 
   useEffect(() => {
-    console.log(tasks)
     if (tasks.status === 'idle') {
       dispatch(getAllTasks({}));
     }
@@ -42,20 +54,91 @@ export const Dashboard = () => {
     setOpen(false);
   }
 
-  const handleSave = () => {
-    console.log(currentTask)
-    dispatch(addTask(currentTask));
+  const handleSave = (e: any) => {
+    e.preventDefault();
+    const formFields: FormValuesKeys[] = ['title', 'description', 'dueDate']; // Specify the keys directly
+    let newFormValues = { ...formValues };
+
+    for (let index = 0; index < formFields.length; index++) {
+      const currentField = formFields[index];
+      const currentValue = formValues[currentField].value;
+
+      // Check for empty fields AND validate email if it's the email field
+      if (currentValue === '') {
+        newFormValues = {
+          ...newFormValues,
+          [currentField]: {
+            ...newFormValues[currentField],
+            error: true,
+          },
+        };
+      } else {
+        newFormValues = {
+          ...newFormValues,
+          [currentField]: {
+            ...newFormValues[currentField],
+            error: false,
+          },
+        };
+      }
+    }
+    setFormValues(newFormValues);
+
+    const hasErrors = Object.values(newFormValues).some(
+      (field) => field.error === true
+    );
+
+    if (!hasErrors) {
+      dispatch(addTask({
+        'title': formValues.title.value,
+        'description': formValues.description.value,
+        'dueDate': formValues.dueDate.value,
+        'status': 'Pending'
+      })).then(() => {
+        handleClose();
+        toast.success("New task created", {
+          autoClose: 2000, hideProgressBar: true, position: "bottom-right",
+          closeOnClick: true, pauseOnHover: true, theme: "colored",
+      });
+      });
+    }
+
+
   }
+
+  const handleDeleteTask = (taskId: any) => {
+    console.log(taskId)
+  };
+
+  type FormValuesKeys = 'title' | 'description' | 'dueDate';
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name as FormValuesKeys;
+    const value = e.target.value;
+
+    setFormValues({
+      ...formValues,
+      [name]: {
+        ...formValues[name],
+        value,
+        error: formValues[name].error, // Validate email
+        errorMessage: formValues[name].errorMessage
+      }
+    });
+  }
+
 
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h4" align="center" sx={{ m: 2 }}>
-          React App From Home
+          React App Task Managament
         </Typography>
 
         <Box sx={{ m: 2 }}>
-          <ToggleThemeMode />
+          <Button variant="contained" color="primary" onClick={() => handleOpen()}>
+            Agregar Tarea
+          </Button>
         </Box>
         <Box sx={{ m: 2 }}>
           <LOgout />
@@ -65,9 +148,7 @@ export const Dashboard = () => {
       <Divider />
 
       <Container maxWidth="lg" sx={{ p: 2 }}>
-        <Button variant="contained" color="primary" onClick={() => handleOpen()}>
-          Agregar Tarea
-        </Button>
+
         <Grid container spacing={4}>
           {!isLoadingUsers ? (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', m: 4 }}>
@@ -76,37 +157,60 @@ export const Dashboard = () => {
           ) : (
             tasks.tasks?.map((tasks: any) => (
               <Grid item lg={4} md={6} sm={6} xs={12} width="100%" key={tasks.id}>
-                <TaskCard task={tasks} />
+                <TaskCard task={tasks} onDelete={handleDeleteTask} />
               </Grid>
             ))
           )}
         </Grid>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>{currentTask.id === 0 ? 'Nueva Tarea' : 'Editar Tarea'}</DialogTitle>
+          <DialogTitle>Nueva Tarea</DialogTitle>
           <DialogContent>
             <TextField
-              label="Título"
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              required
               fullWidth
-              margin="dense"
-              value={currentTask.title}
-              onChange={e => setCurrentTask({ ...currentTask, title: e.target.value })}
+              id="title"
+              label="title"
+              name="title"
+              autoFocus
+              error={formValues.title.error}
+              value={formValues.title.value}
+              helperText={formValues.title.error && formValues.title.errorMessage}
             />
             <TextField
-              label="Descripción"
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              required
               fullWidth
-              margin="dense"
-              value={currentTask.description}
-              onChange={e => setCurrentTask({ ...currentTask, description: e.target.value })}
+              name="description"
+              label="description"
+              type="text"
+              id="description"
+              autoComplete="current-password"
+              error={formValues.description.error}
+              value={formValues.description.value}
+              helperText={formValues.description.error && formValues.description.errorMessage}
             />
             <TextField
-              label="Fecha de Vencimiento"
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
               type="date"
+              required
               fullWidth
-              margin="dense"
-              InputLabelProps={{ shrink: true }}
-              value={currentTask.dueDate}
-              onChange={e => setCurrentTask({ ...currentTask, dueDate: e.target.value })}
+              name="dueDate"
+              label="dueDate"
+              id="dueDate"
+              autoComplete="current-password"
+              error={formValues.dueDate.error}
+              value={formValues.dueDate.value}
+              helperText={formValues.dueDate.error && formValues.dueDate.errorMessage}
             />
+
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">

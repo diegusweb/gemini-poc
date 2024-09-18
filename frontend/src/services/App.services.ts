@@ -26,7 +26,7 @@ const AppServices = {
     deleteTask: (taskId:any) => {
         const userToken = getToken();
         apiCLient.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
-       return apiCLient.post('/api/v1/tasks/'+taskId);
+       return apiCLient.delete('/api/v1/tasks/'+taskId);
     },
 }
 

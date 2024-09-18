@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import AppServices from "../../services/App.services";
 import { removeToken, setToken } from "../../utils/HelperFucntions";
 import history from "../../utils/history";
@@ -76,9 +76,13 @@ export const authSlice = createSlice({
                 state.loading = false;
             })
     },
-    reducers: {}
+    reducers: {
+        setAuthState: (state, action: PayloadAction<boolean>) => {
+            state.isAuthenticated = action.payload;
+        }
+    }
 })
 
 export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;;
 
-export const { } = authSlice.actions;
+export const { setAuthState } = authSlice.actions;
