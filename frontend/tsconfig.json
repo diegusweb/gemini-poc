@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    // ... other compiler options
+    "types": ["jest"],
+    "jsx": "react-jsx",
+    "target": "es2017"
+  }
+}
