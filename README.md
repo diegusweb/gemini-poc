@@ -15,22 +15,24 @@ Before you begin, ensure you have the following installed on your system:
 
 ## Getting Started
 
-### Clone the Repository
+You must enter the project folder and follow the following instructions to launch the project,
 
+### Build  with Docker Compose
 ```sh
-git clone <REPOSITORY_URL>
+docker-compose  build
 ```
 
-Replace <REPOSITORY_URL> with the actual URL of the repository.
-
-### Navigate to the Backend Application Directory
-```sh
-cd backend/backend-task-app
-```
-### Build and Run with Docker Compose
+### Run with Docker Compose
 ```sh
 docker-compose up -d
 ```
+
+### Open Browser
+```sh
+http://localhost:5173/
+
+```
+
 This command will:
 
 - Build the necessary Docker images based on the Dockerfile in the current directory.
