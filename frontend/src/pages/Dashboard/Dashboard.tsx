@@ -155,22 +155,22 @@ export const Dashboard = () => {
 
       <Divider />
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+        <Box component="section" sx={{ p: 2, border: '1px dashed blue', backgroundColor: 'blue' }}>
           <Typography align="center" sx={{ m: 2 }}>
             Total Task created:  {tasks.tasks.length}
           </Typography>
         </Box>
-        <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+        <Box component="section" sx={{ p: 2, border: '1px dashed grey', backgroundColor: 'grey' }}>
           <Typography align="center" sx={{ m: 2 }}>
           Total Task pending: {tasks.tasks.filter((task: any) => task.status === 'Pending').length}
           </Typography>
         </Box>
-        <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+        <Box component="section" sx={{ p: 2, border: '1px dashed green', backgroundColor: 'green' }}>
           <Typography align="center" sx={{ m: 2 }}>
           Total Task Completed: {tasks.tasks.filter((task: any) => task.status === 'Completed').length}
           </Typography>
         </Box>
-        <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+        <Box component="section" sx={{ p: 2, border: '1px dashed red', backgroundColor: 'red' }}>
           <Typography align="center" sx={{ m: 2 }}>
           Total Task inprogress: {tasks.tasks.filter((task: any) => task.status === 'inprogress').length}
           </Typography>
