@@ -8,12 +8,15 @@ type TaskState = {
     tasks: Task[],
     status: string,
     loading: boolean,
+    count: number,
+
 }
 
 const initialState: TaskState = {
     tasks: [],
     loading: false,
-    status: 'idle'
+    status: 'idle',
+    count: 0
 };
 
 export const getAllTasks = createAsyncThunk('api/tasks', async (payload: any) => {
@@ -50,6 +53,7 @@ export const taskSlice = createSlice({
                 state.status = "succeeded";
                 state.loading = false;
                 state.tasks = action.payload;
+                state.count = action.payload.length;
             })
             .addCase(getAllTasks.rejected, (state, action) => {
                 state.status = "failed";

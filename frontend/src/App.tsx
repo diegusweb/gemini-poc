@@ -9,6 +9,7 @@ import { Dashboard } from './pages/Dashboard/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import NotFound from './pages/NotFound/NotFound'
 import { SingUp } from './pages/SingUp/SingUP'
+import Profile from './pages/Profile/Profile'
 
 function App() {
   const { themeMode } = useAppSelector((state) => state.ui);
@@ -31,6 +32,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/profile" element={<Profile />} /> 
         </Routes>
       </Router>
     </ThemeProvider>

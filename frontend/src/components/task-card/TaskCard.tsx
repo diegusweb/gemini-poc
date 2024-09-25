@@ -1,5 +1,5 @@
 import { EditOutlined, DeleteOutlined, EmailOutlined } from '@mui/icons-material';
-import { Card, Avatar, CardContent, Typography, CardActions, IconButton, Box, Tooltip, useTheme, Button, Dialog, TextField, DialogActions, DialogTitle, DialogContent } from '@mui/material';
+import { Card, Avatar, CardContent, Typography, CardActions, IconButton, Box, Tooltip, useTheme, Button, Dialog, TextField, DialogActions, DialogTitle, DialogContent, Select, InputLabel, MenuItem } from '@mui/material';
 
 import { User } from '../../types';
 import Task from '../../types/interfaces/Task';
@@ -26,7 +26,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
     status: task.status,
   });
   const [openModal, setOpenModal] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null); 
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
 
 
@@ -63,17 +63,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardContent>
-      <Typography gutterBottom variant="h5" component="div">{task.title}</Typography>
-      <Typography variant="body2" sx={{ color: 'text.secondary' }}>{task.description}</Typography>
-      <br />
-      <br />
+        <Typography gutterBottom variant="h5" component="div">{task.title}</Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>{task.description}</Typography>
+        <br />
+        <br />
         <Typography>{task.dueDate}</Typography>
         <Typography>Status: {task.status}</Typography>
         <br />
         <CardActions>
-        <Button variant="contained" onClick={handleEdit}>Edit</Button>
-        <Button variant="outlined" color="secondary" onClick={() => handleOpenModal(task)}>Delete</Button>
-      </CardActions>
+          <Button variant="contained" onClick={handleEdit}>Edit</Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleOpenModal(task)}>Delete</Button>
+        </CardActions>
 
 
         <Dialog open={isEditing} onClose={() => setIsEditing(false)}>
@@ -100,13 +100,18 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
               onChange={(e) => setEditedTask({ ...editedTask, dueDate: e.target.value })}
               fullWidth
             />
-            <TextField
-              label="Status"
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
               value={editedTask.status}
-              margin='dense'
+              label="Status"
               onChange={(e) => setEditedTask({ ...editedTask, status: e.target.value })}
-              fullWidth
-            />
+            >
+              <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Completed">Completed</MenuItem>
+              <MenuItem value="InProgress">InProgress</MenuItem>
+            </Select>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setIsEditing(false)} color="secondary">Cancel</Button>
