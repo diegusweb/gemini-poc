@@ -16,6 +16,10 @@ Before you begin, ensure you have the following installed on your system:
 ## Getting Started
 
 You must enter the project folder and follow the following instructions to launch the project,
+### Download source branch develop
+```sh
+git clone <https://github.com/diegusweb/gemini-poc.git>
+```
 
 ### Build  with Docker Compose
 ```sh
